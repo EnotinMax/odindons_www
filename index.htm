@@ -385,7 +385,7 @@
             
             if (isDropdownOpen) {
                 onlineDropdown.classList.add('show');
-                fetchServerData(); // принудительное обновлении при открытии
+                fetchServerData(true); // принудительное обновлении при открытии
             } else {
                 onlineDropdown.classList.remove('show');
             }
