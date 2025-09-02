@@ -23,7 +23,7 @@
     <div class="rune-background rune-9">ᚠᛟᚱᚾᛃᛟᚦᚱ</div>
     <div class="rune-background rune-10">ᚦᛟᚱᛋᚠᛁᛜᚱ</div>
     <div class="rune-background rune-11">ᛟᛞᛁᚾᛋᛟᚾᛖᚱ</div>
-
+    <!-- фон -->
     <div class="side-backgroundL">
         <img src="build-2.png" alt="фон баба слева">
     </div>
@@ -42,40 +42,42 @@
                 <div class="header-buttons">
                     <div class="online-widget">
                         <div class="online-btn" id="onlineBtn">
-                        <span class="online-icon">Lite</span>
-                        <span class="online-count">0</span>
-                        <span class="online-arrow">▼</span>
+                            <span class="online-icon">Lite</span>
+                            <span class="online-count">0</span>
+                            <span class="online-arrow">▼</span>
+                        </div>
+                        <div class="online-dropdown" id="onlineDropdown">
+                            <div class="online-header">
+                                <h3>Викинги онлайн: <span id="onlinePlayersCount">0</span></h3>
+                                <span class="online-close" id="onlineClose">✕</span>
+                            </div>
+                            <div class="online-content">
+                                <div class="players-loading">Загрузка данных о викингах...</div>
+                                <div class="players-list" id="playersList"></div>
+                                <div class="players-error" id="playersError" style="display: none;"></div>
+                                <div class="players-updated" id="playersUpdated"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="online-dropdown" id="onlineDropdown">
-                        <div class="online-header">
-                        <h3>Викинги онлайн: <span id="onlinePlayersCount">0</span></h3>
-                        <span class="online-close" id="onlineClose">✕</span>
-                    </div>
-                    <div class="online-content">
-                        <div class="players-loading">Загрузка данных о викингах...</div>
-                        <div class="players-list" id="playersList"></div>
-                        <div class="players-error" id="playersError" style="display: none;"></div>
-                        <div class="players-updated" id="playersUpdated"></div>
-                    </div> 
                     <div class="online-widget">
-                    <div class="online-btn" id="onlineBtn2">
-                        <span class="online-icon">Valknut</span>
-                        <span class="online-count">0</span>
-                        <span class="online-arrow">▼</span>
+                        <div class="online-btn" id="onlineBtn2">
+                            <span class="online-icon">Valknut</span>
+                            <span class="online-count">0</span>
+                            <span class="online-arrow">▼</span>
+                        </div>
+                        <div class="online-dropdown" id="onlineDropdown2">
+                            <div class="online-header">
+                                <h3>Викинги онлайн: <span id="onlinePlayersCount2">0</span></h3>
+                                <span class="online-close" id="onlineClose2">✕</span>
+                            </div>
+                            <div class="online-content">
+                                <div class="players-loading">Загрузка данных о викингах...</div>
+                                <div class="players-list" id="playersList2"></div>
+                                <div class="players-error" id="playersError2" style="display: none;"></div>
+                                <div class="players-updated" id="playersUpdated2"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="online-dropdown" id="onlineDropdown2">
-                        <div class="online-header">
-                        <h3>Викинги онлайн: <span id="onlinePlayersCount2">0</span></h3>
-                        <span class="online-close" id="onlineClose2">✕</span>
-                    </div>
-                    <div class="online-content">
-                        <div class="players-loading">Загрузка данных о викингах...</div>
-                        <div class="players-list" id="playersList2"></div>
-                        <div class="players-error" id="playersError2" style="display: none;"></div>
-                        <div class="players-updated" id="playersUpdated2"></div>
-                    </div>
-                </div>
-            </div>
                     <a href="rules.htm" class="header-btn" title="Правила сервера">
                         <span style="font-family: 'NordicCyr', sans-serif; font-weight: 700; font-size: 32px;">Правила</span>
                     </a>
