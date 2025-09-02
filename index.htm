@@ -345,10 +345,12 @@
         
         // обновление интерфейса
         function updateUI(data) {
+        // всегда обновлять счётчик, даже если dropdowb (выпадашка) закрыта
             onlineCount.textContent = data.playersCount;
             onlinePlayersCount.textContent = data.playersCount;
-            
-            playersList.innerHTML = '';
+        // обновляем список только если dropdown открыт
+            if (isDropdownOpen) {
+                playersList.innerHTML = '';
             
             if (data.players && data.players.length > 0) {
                 for (const player of data.players) {
@@ -369,7 +371,7 @@
                     playersList.appendChild(playerCard);
                 }
             } else {
-                playersList.innerHTML = '<div class="players-loading">На лайте тихо... Нет игроков онлайн</div>';
+                playersList.innerHTML = '<div class="players-loading">На Лайте тихо... Нет игроков онлайн</div>';
             }
             
             playersLoading.style.display = 'none';
@@ -383,7 +385,7 @@
             
             if (isDropdownOpen) {
                 onlineDropdown.classList.add('show');
-                fetchServerData();
+                fetchServerData(); // принудительное обновлении при открытии
             } else {
                 onlineDropdown.classList.remove('show');
             }
