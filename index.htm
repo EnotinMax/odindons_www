@@ -189,23 +189,22 @@
         const playersLoading = document.querySelector('.players-loading');
         const playersError = document.getElementById('playersError');
         const playersUpdated = document.getElementById('playersUpdated');
-        
         let lastFetchTime = 0;
-        let isDropdownOpen = false;
-        
+        let isDropdownOpen = false; 
         // форматирование времени обновления
         function formatUpdateTime(date) {
             return `Обновлено: ${date.toLocaleTimeString()}`;
-        // грузим счётсик при загрузке страницы
-        fetchServerData();
-        // обновляем данные каждые 30 секунд
-        setInterval(fetchServerData, 30000);
         }
-        
+               
         // получение данных с серва
-        async function fetchServerData() {
+        async function fetchServerData(forceUpdate = false) {
             const now = Date.now();
-                       
+
+            // проверяем, прошло ли 5 секунд с последнего запроса (только если не принудилово)
+            if (!forceUpdate && now - lastFetchTime < 5000 && playersList.children.length > 0) {
+                return;
+            }
+            
             lastFetchTime = now;
             
             playersLoading.style.display = 'block';
