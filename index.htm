@@ -197,8 +197,8 @@
     </script>
     
     <script>
+        // выпадашка списка игроков онлайн для Lite
     document.addEventListener('DOMContentLoaded', function() {
-        // выпадашка списка игроков онлайн для lite
         const onlineBtn = document.getElementById('onlineBtn');
         const onlineDropdown = document.getElementById('onlineDropdown');
         const onlineClose = document.getElementById('onlineClose');
@@ -208,28 +208,14 @@
         const playersLoading = document.querySelector('.players-loading');
         const playersError = document.getElementById('playersError');
         const playersUpdated = document.getElementById('playersUpdated');
-        
         let lastFetchTime = 0;
         let isDropdownOpen = false; 
-        // выпадашка списка игроков онлайн для valknut
-        const onlineBtn2 = document.getElementById('onlineBtn2');
-        const onlineDropdown2 = document.getElementById('onlineDropdown2');
-        const onlineClose2 = document.getElementById('onlineClose2');
-        const onlineCount2 = document.querySelector('#onlineBtn2 .online-count');
-        const onlinePlayersCount2 = document.getElementById('onlinePlayersCount2');
-        const playersList2 = document.getElementById('playersList2');
-        const playersLoading2 = document.querySelector('#onlineDropdown2 .players-loading');
-        const playersError2 = document.getElementById('playersError2');
-        const playersUpdated2 = document.getElementById('playersUpdated2');
-        
-        let lastFetchTime2 = 0;
-        let isDropdownOpen2 = false;
         // форматирование времени обновления
         function formatUpdateTime(date) {
             return `Обновлено: ${date.toLocaleTimeString()}`;
         }
                
-        // получение данных с lite
+        // получение данных с серва
         async function fetchServerData(forceUpdate = false) {
             const now = Date.now();
 
@@ -376,7 +362,7 @@
             }
         }
         
-        // обновление интерфейса lite
+        // обновление интерфейса
         function updateUI(data) {
         // всегда обновлять счётчик, даже если dropdowb (выпадашка) закрыта
             onlineCount.textContent = data.playersCount;
@@ -410,7 +396,56 @@
             playersLoading.style.display = 'none';
             playersUpdated.textContent = formatUpdateTime(new Date());
         }
- // получение данных с valknut
+        
+        // обработчики событий
+        onlineBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            isDropdownOpen = !isDropdownOpen;
+            
+            if (isDropdownOpen) {
+                onlineDropdown.classList.add('show');
+                fetchServerData(true); // принудительное обновлении при открытии
+            } else {
+                onlineDropdown.classList.remove('show');
+            }
+        });
+        
+        onlineClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            onlineDropdown.classList.remove('show');
+            isDropdownOpen = false;
+        });
+        
+        // закрытие dropdown при клике вне его
+        document.addEventListener('click', function(e) {
+            if (!onlineBtn.contains(e.target) && !onlineDropdown.contains(e.target)) {
+                onlineDropdown.classList.remove('show');
+                isDropdownOpen = false;
+            }
+        });
+        
+        // инициализация времени обновления
+        playersUpdated.textContent = formatUpdateTime(new Date());
+    });
+    </script>
+
+    <script>
+         // выпадашка списка игроков онлайн для Valknut
+    document.addEventListener('DOMContentLoaded', function() {
+        const onlineBtn2 = document.getElementById('onlineBtn2');
+        const onlineDropdown2 = document.getElementById('onlineDropdown2');
+        const onlineClose2 = document.getElementById('onlineClose2');
+        const onlineCount2 = document.querySelector('#onlineBtn2 .online-count');
+        const onlinePlayersCount2 = document.getElementById('onlinePlayersCount2');
+        const playersList2 = document.getElementById('playersList2');
+        const playersLoading2 = document.querySelector('#onlineDropdown2 .players-loading');
+        const playersError2 = document.getElementById('playersError2');
+        const playersUpdated2 = document.getElementById('playersUpdated2');
+        
+        let lastFetchTime2 = 0;
+        let isDropdownOpen2 = false;
+        
+        // получениt данных со второго серва
         async function fetchServerData2() {
             const now = Date.now();
             
@@ -420,6 +455,7 @@
             playersError2.style.display = 'none';
             
             try {
+                // прямой запрос к апи второго сервера
                 const response = await fetch('http://server-reserved.odinsons.fun:2518/serverinfo', {
                     mode: 'cors',
                     headers: {
@@ -436,6 +472,7 @@
             } catch (err) {
                 console.error('Ошибка загрузки данных второго сервера:', err);
                 
+                // если прямой запрос не удался, пробуем через cors-прокси
                 try {
                     const proxyUrl = 'https://api.allorigins.win/raw?url=';
                     const encodedUrl = encodeURIComponent('http://server-reserved.odinsons.fun:2518/serverinfo');
@@ -451,6 +488,7 @@
                 } catch (proxyErr) {
                     console.error('Ошибка загрузки через прокси второго сервера:', proxyErr);
                     
+                    // показываем ошибку
                     playersLoading2.style.display = 'none';
                     playersError2.style.display = 'block';
                     playersError2.textContent = 'Ошибка загрузки данных с сервера';
@@ -491,41 +529,7 @@
             playersUpdated2.textContent = formatUpdateTime(new Date());
         }
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-        // обработчики событий lite
-        onlineBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            isDropdownOpen = !isDropdownOpen;
-            
-            if (isDropdownOpen) {
-                onlineDropdown.classList.add('show');
-                fetchServerData(true); // принудительное обновлении при открытии
-            } else {
-                onlineDropdown.classList.remove('show');
-            }
-        });
-        
-        onlineClose.addEventListener('click', function(e) {
-            e.stopPropagation();
-            onlineDropdown.classList.remove('show');
-            isDropdownOpen = false;
-        });
-
-             // обработчики событий valknut
+        // обработчики событий для второго виджета
         onlineBtn2.addEventListener('click', function(e) {
             e.stopPropagation();
             isDropdownOpen2 = !isDropdownOpen2;
@@ -543,35 +547,22 @@
             onlineDropdown2.classList.remove('show');
             isDropdownOpen2 = false;
         });
-
-            
+        
         // закрытие dropdown при клике вне его
         document.addEventListener('click', function(e) {
-            if (!onlineBtn.contains(e.target) && !onlineDropdown.contains(e.target)) {
-                onlineDropdown.classList.remove('show');
-                isDropdownOpen = false;
-            }
-        });
-        // для второго виджета
             if (!onlineBtn2.contains(e.target) && !onlineDropdown2.contains(e.target)) {
                 onlineDropdown2.classList.remove('show');
                 isDropdownOpen2 = false;
             }
         });
-            
-        // грузим данные сразу при открытии страницы
-        fetchServerData();
+        
+        // грузим данные сразу при открытии страницы для второго серва
         fetchServerData2();
         
-        // также обновляем данные каждые 30 секунд
-        setInterval(fetchServerData, 30000);
+        // также обновляем данные каждые 30 секунд для второго сервера
         setInterval(fetchServerData2, 30000);
-        
-        // инициализация времени обновления
-        playersUpdated.textContent = formatUpdateTime(new Date());
-        playersUpdated2.textContent = formatUpdateTime(new Date());
     });
-</script>   
-       
+</script>
+    
 </body>
 </html>
