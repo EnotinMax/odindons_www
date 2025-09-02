@@ -41,21 +41,40 @@
                 </a>
                 <div class="header-buttons">
                     <div class="online-widget">
-                    <div class="online-btn" id="onlineBtn">
-                    <span class="online-icon">Lite:</span>
+                        <div class="online-btn" id="onlineBtn">
+                        <span class="online-icon">Lite:</span>
+                        <span class="online-count">0</span>
+                        <span class="online-arrow">▼</span>
+                    </div>
+                    <div class="online-dropdown" id="onlineDropdown">
+                        <div class="online-header">
+                        <h3>Викинги онлайн: <span id="onlinePlayersCount">0</span></h3>
+                        <span class="online-close" id="onlineClose">✕</span>
+                    </div>
+                    <div class="online-content">
+                        <div class="players-loading">Загрузка данных о викингах...</div>
+                        <div class="players-list" id="playersList"></div>
+                        <div class="players-error" id="playersError" style="display: none;"></div>
+                        <div class="players-updated" id="playersUpdated"></div>
+                    </div>
+                </div>
+            </div>
+                <div class="online-widget">
+                <div class="online-btn" id="onlineBtn2">
+                    <span class="online-icon">Valknut</span>
                     <span class="online-count">0</span>
                     <span class="online-arrow">▼</span>
                 </div>
-                <div class="online-dropdown" id="onlineDropdown">
+                <div class="online-dropdown" id="onlineDropdown2">
                     <div class="online-header">
-                    <h3>Викинги онлайн: <span id="onlinePlayersCount">0</span></h3>
-                    <span class="online-close" id="onlineClose">✕</span>
+                    <h3>Викинги онлайн: <span id="onlinePlayersCount2">0</span></h3>
+                    <span class="online-close" id="onlineClose2">✕</span>
                 </div>
                 <div class="online-content">
                     <div class="players-loading">Загрузка данных о викингах...</div>
-                    <div class="players-list" id="playersList"></div>
-                    <div class="players-error" id="playersError" style="display: none;"></div>
-                    <div class="players-updated" id="playersUpdated"></div>
+                    <div class="players-list" id="playersList2"></div>
+                    <div class="players-error" id="playersError2" style="display: none;"></div>
+                    <div class="players-updated" id="playersUpdated2"></div>
                 </div>
             </div>
         </div>
@@ -178,7 +197,7 @@
     </script>
     
     <script>
-        // выпадашка списка игроков онлайн
+        // выпадашка списка игроков онлайн для Lite
     document.addEventListener('DOMContentLoaded', function() {
         const onlineBtn = document.getElementById('onlineBtn');
         const onlineDropdown = document.getElementById('onlineDropdown');
@@ -407,6 +426,141 @@
         
         // инициализация времени обновления
         playersUpdated.textContent = formatUpdateTime(new Date());
+    });
+    </script>
+
+    <script>
+         // выпадашка списка игроков онлайн для Valknut
+    document.addEventListener('DOMContentLoaded', function() {
+        const onlineBtn2 = document.getElementById('onlineBtn2');
+        const onlineDropdown2 = document.getElementById('onlineDropdown2');
+        const onlineClose2 = document.getElementById('onlineClose2');
+        const onlineCount2 = document.querySelector('#onlineBtn2 .online-count');
+        const onlinePlayersCount2 = document.getElementById('onlinePlayersCount2');
+        const playersList2 = document.getElementById('playersList2');
+        const playersLoading2 = document.querySelector('#onlineDropdown2 .players-loading');
+        const playersError2 = document.getElementById('playersError2');
+        const playersUpdated2 = document.getElementById('playersUpdated2');
+        
+        let lastFetchTime2 = 0;
+        let isDropdownOpen2 = false;
+        
+        // получениt данных со второго серва
+        async function fetchServerData2() {
+            const now = Date.now();
+            
+            lastFetchTime2 = now;
+            
+            playersLoading2.style.display = 'block';
+            playersError2.style.display = 'none';
+            
+            try {
+                // прямой запрос к апи второго сервера
+                const response = await fetch('http://server-reserved.odinsons.fun:2518/serverinfo', {
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                updateUI2(data);
+            } catch (err) {
+                console.error('Ошибка загрузки данных второго сервера:', err);
+                
+                // если прямой запрос не удался, пробуем через cors-прокси
+                try {
+                    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                    const encodedUrl = encodeURIComponent('http://server-reserved.odinsons.fun:2518/serverinfo');
+                    
+                    const proxyResponse = await fetch(proxyUrl + encodedUrl);
+                    
+                    if (!proxyResponse.ok) {
+                        throw new Error(`Ошибка HTTP прокси: ${proxyResponse.status}`);
+                    }
+                    
+                    const data = await proxyResponse.json();
+                    updateUI2(data);
+                } catch (proxyErr) {
+                    console.error('Ошибка загрузки через прокси второго сервера:', proxyErr);
+                    
+                    // показываем ошибку
+                    playersLoading2.style.display = 'none';
+                    playersError2.style.display = 'block';
+                    playersError2.textContent = 'Ошибка загрузки данных с сервера';
+                }
+            }
+        }
+        
+        // обновление интерфейса второго виджета
+        function updateUI2(data) {
+            onlineCount2.textContent = data.playersCount;
+            onlinePlayersCount2.textContent = data.playersCount;
+            
+            playersList2.innerHTML = '';
+            
+            if (data.players && data.players.length > 0) {
+                for (const player of data.players) {
+                    const playerCard = document.createElement('div');
+                    playerCard.className = 'player-card';
+                    
+                    playerCard.innerHTML = `
+                        <img src="${player.AvatarUrl}" alt="Аватар" class="player-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjYTU2YzM3Ij48Y2lyY2xlIGN4PSIxMDAiIGN5PSI3MCIgcj0iNTAiIGZpbGw9IiNmNmMwNmYiLz48Y2lyY2xlIGN4PSIxMDAiIGN5PSIyMDAiIHI9IjgwIiBmaWxsPSIjZjZkNmE5Ii8+PC9zdmc+'">
+                        <div class="player-info">
+                            <div class="player-name">${player.Name}</div>
+                            <a href="https://steamcommunity.com/profiles/${player.SteamID}" target="_blank" class="player-steamid">
+                                ID: ${player.SteamID}
+                            </a>
+                        </div>
+                        <div class="status-indicator"></div>
+                    `;
+                    
+                    playersList2.appendChild(playerCard);
+                }
+            } else {
+                playersList2.innerHTML = '<div class="players-loading">На сервере нет игроков</div>';
+            }
+            
+            playersLoading2.style.display = 'none';
+            playersUpdated2.textContent = formatUpdateTime(new Date());
+        }
+        
+        // обработчики событий для второго виджета
+        onlineBtn2.addEventListener('click', function(e) {
+            e.stopPropagation();
+            isDropdownOpen2 = !isDropdownOpen2;
+            
+            if (isDropdownOpen2) {
+                onlineDropdown2.classList.add('show');
+                fetchServerData2();
+            } else {
+                onlineDropdown2.classList.remove('show');
+            }
+        });
+        
+        onlineClose2.addEventListener('click', function(e) {
+            e.stopPropagation();
+            onlineDropdown2.classList.remove('show');
+            isDropdownOpen2 = false;
+        });
+        
+        // закрытие dropdown при клике вне его
+        document.addEventListener('click', function(e) {
+            if (!onlineBtn2.contains(e.target) && !onlineDropdown2.contains(e.target)) {
+                onlineDropdown2.classList.remove('show');
+                isDropdownOpen2 = false;
+            }
+        });
+        
+        // грузим данные сразу при открытии страницы для второго серва
+        fetchServerData2();
+        
+        // также обновляем данные каждые 30 секунд для второго сервера
+        setInterval(fetchServerData2, 30000);
     });
 </script>
     
